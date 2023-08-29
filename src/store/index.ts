@@ -14,9 +14,6 @@ import storage from 'redux-persist/lib/storage';
 import auth from './reducers/auth';
 import inform from './reducers/inform';
 import { authApi } from './services/auth';
-import { categoryApi } from './services/category';
-import { experienceApi } from './services/experience';
-import { blistApi } from './services/blist';
 
 const persistConfig = {
   key: 'root',
@@ -29,9 +26,6 @@ const RootReducer = combineReducers({
   auth,
   inform,
   [authApi.reducerPath]: authApi.reducer,
-  [categoryApi.reducerPath]: categoryApi.reducer,
-  [experienceApi.reducerPath]: experienceApi.reducer,
-  [blistApi.reducerPath]: blistApi.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, RootReducer);
@@ -44,12 +38,7 @@ export const store: Store = configureStore({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
-    }).concat(
-      authApi.middleware,
-      categoryApi.middleware,
-      experienceApi.middleware,
-      blistApi.middleware,
-    ),
+    }).concat(authApi.middleware),
 });
 
 setupListeners(store.dispatch);

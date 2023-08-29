@@ -1,9 +1,9 @@
-import { useSigninMutation } from '../store/services/auth';
+import { useSignupMutation } from '../store/services/auth';
 import { Button, TextField } from '@app/components';
 import { Link } from 'react-router-dom';
 
-export default function Signin() {
-  const [signin, { isLoading }] = useSigninMutation();
+export default function Signup() {
+  const [signup, { isLoading }] = useSignupMutation();
   return (
     <div className="d-flex flex-center flex-column align-items-stretch h-lg-100 w-md-400px">
       <div className="d-flex flex-center flex-column flex-column-fluid pb-15 pb-lg-20">
@@ -14,30 +14,28 @@ export default function Signin() {
           action="#"
         >
           <div className="text-center mb-11">
-            <h1 className="text-dark fw-bolder mb-3">Sign In</h1>
+            <h1 className="text-dark fw-bolder mb-3">Sign Up</h1>
             <div className="text-gray-500 fw-semibold fs-6">Your Social Campaigns</div>
+          </div>
+          <div className="fv-row mb-8">
+            <TextField type="text" placeholder="Name" name="name" />
           </div>
           <div className="fv-row mb-8">
             <TextField type="text" placeholder="Email" name="email" />
           </div>
-          <div className="fv-row mb-3">
+          <div className="fv-row mb-8">
             <TextField type="password" placeholder="Password" name="password" />
           </div>
-          <div className="d-flex flex-stack flex-wrap gap-3 fs-base fw-semibold mb-8">
-            <div></div>
-            <Link to="/forgot-password" className="link-primary">
-              Forgot Password ?
-            </Link>
-          </div>
+
           <div className="d-grid mb-10">
             <Button variant="primary" isLoading={isLoading}>
               Continue
             </Button>
           </div>
           <div className="text-gray-500 text-center fw-semibold fs-6">
-            Not a Member yet?
-            <Link to="/signup" className="link-primary">
-              Sign up
+            Already have an Account?
+            <Link to="/" className="link-primary">
+              Sign In
             </Link>
           </div>
         </form>

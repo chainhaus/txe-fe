@@ -1,5 +1,5 @@
 import { fetchBaseQuery } from '@reduxjs/toolkit/query';
-import { baseUrl } from '@app/config';
+import { baseUrl } from '../config';
 import type { RootState } from './';
 
 export default fetchBaseQuery({
