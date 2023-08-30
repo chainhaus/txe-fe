@@ -69,7 +69,7 @@ const router = createBrowserRouter([
         element: <PotentialPartner />,
       },
       {
-        path: 'ticket',
+        path: 'ticket/:eventId',
         element: <Ticket />,
       },
     ],

@@ -1,45 +1,51 @@
-import { Button, Table } from '@app/components';
+import { Button, Table, TableSkeleton } from '@app/components';
 import type { Event } from '@app/types/event';
 import { createColumnHelper } from '@tanstack/react-table';
-
-const defaultData: Event[] = [
-  {
-    id: 1,
-    title: 'string',
-    date: 'string',
-    start_time: 'string',
-    end_time: 'string',
-    location: 'string',
-    enabled: true,
-    private: true,
-  },
-  {
-    id: 1,
-    title: 'string',
-    date: 'string',
-    start_time: 'string',
-    end_time: 'string',
-    location: 'string',
-    enabled: true,
-    private: true,
-  },
-];
+import { useFetchEventsQuery } from '@app/store/services/event';
 
 const columnHelper = createColumnHelper<Event>();
 
 const columns = [
   columnHelper.accessor('title', {
+    header: () => 'title',
     cell: (info) => info.getValue(),
   }),
   columnHelper.accessor('date', {
-    cell: (info) => <i>{info.getValue()}</i>,
+    header: () => 'Date',
+    cell: (info) => info.getValue(),
   }),
   columnHelper.accessor('start_time', {
-    cell: (info) => info.renderValue(),
+    header: () => 'Start Time',
+    cell: (info) => info.getValue(),
+  }),
+  columnHelper.accessor('end_time', {
+    header: () => 'End Time',
+    cell: (info) => info.getValue(),
+  }),
+  columnHelper.accessor('location', {
+    header: () => 'Location',
+    cell: (info) => info.getValue(),
+  }),
+  columnHelper.accessor('id', {
+    header: () => 'Action',
+    cell: (info) => (
+      <div>
+        <Button variant="primary" className="me-2">
+          <i className="ki-outline ki-eye fs-3"></i>
+        </Button>
+        <Button variant="secondary" className="me-2">
+          <i className="ki-outline ki-pencil fs-3"></i>
+        </Button>
+        <Button variant="success">
+          <i className="ki-outline ki-cheque fs-3"></i>
+        </Button>
+      </div>
+    ),
   }),
 ];
 
 export default function Dashboard() {
+  const { data, isLoading, isSuccess } = useFetchEventsQuery({});
   return (
     <div className="app-content flex-column-fluid ">
       <div className="card d-flex flex-column flex-row-fluid">
@@ -57,7 +63,8 @@ export default function Dashboard() {
           </div>
         </div>
         <div className="card-body pt-0">
-          <Table columns={columns} data={defaultData} />
+          {isLoading && <TableSkeleton />}
+          {isSuccess && <Table columns={columns} data={data} />}
         </div>
       </div>
     </div>
