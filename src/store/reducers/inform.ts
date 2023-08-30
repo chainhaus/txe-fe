@@ -3,7 +3,7 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 
 export interface InformState {
   show: boolean;
-  type: 'error' | 'success';
+  type: 'danger' | 'success';
   message: string;
 }
 

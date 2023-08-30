@@ -1,6 +1,7 @@
 import ReduxProvider from './store/provider';
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 
+import { Inform } from './containers/Inform';
 import { PublicLayout, PrivateLayout } from './containers/Layout';
 import ErrorPage from './containers/error-page';
 import Signin from './containers/Signin';
@@ -78,6 +79,7 @@ const router = createBrowserRouter([
 function App() {
   return (
     <ReduxProvider>
+      <Inform />
       <RouterProvider router={router} />
     </ReduxProvider>
   );

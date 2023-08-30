@@ -1,35 +1,50 @@
-import { useSignupMutation } from '../store/services/auth';
-import { Button, TextField } from '@app/components';
-import { Link } from 'react-router-dom';
+import { useSignupMutation } from '@app/store/services/auth';
+import { Button, HTextField } from '@app/components';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { Link, useNavigate } from 'react-router-dom';
+import { SignupPayload } from '@app/store/services/auth/type';
+import { registerValidation } from '@app/validations';
 
 export default function Signup() {
+  const navigate = useNavigate();
   const [signup, { isLoading }] = useSignupMutation();
+  const { handleSubmit, control } = useForm<SignupPayload>({
+    resolver: registerValidation,
+  });
+  const onSubmit: SubmitHandler<SignupPayload> = (data) => {
+    signup(data)
+      .unwrap()
+      .then(() => navigate('/'));
+  };
   return (
     <div className="d-flex flex-center flex-column align-items-stretch h-lg-100 w-md-400px">
       <div className="d-flex flex-center flex-column flex-column-fluid pb-15 pb-lg-20">
-        <form
-          className="form w-100"
-          id="kt_sign_in_form"
-          data-kt-redirect-url="../../demo44/dist/index.html"
-          action="#"
-        >
+        <form className="form w-100" id="kt_sign_in_form" onSubmit={handleSubmit(onSubmit)}>
           <div className="text-center mb-11">
             <h1 className="text-dark fw-bolder mb-3">Sign Up</h1>
             <div className="text-gray-500 fw-semibold fs-6">Your Social Campaigns</div>
           </div>
           <div className="fv-row mb-8">
-            <TextField type="text" placeholder="Name" name="name" />
+            <HTextField control={control} type="text" placeholder="Name" name="name" />
           </div>
           <div className="fv-row mb-8">
-            <TextField type="text" placeholder="Email" name="email" />
+            <HTextField control={control} type="text" placeholder="Email" name="email" />
           </div>
           <div className="fv-row mb-8">
-            <TextField type="password" placeholder="Password" name="password" />
+            <HTextField control={control} type="password" placeholder="Password" name="password" />
+          </div>
+          <div className="fv-row mb-8">
+            <HTextField
+              control={control}
+              type="password"
+              placeholder="Confirm Password"
+              name="confirm_password"
+            />
           </div>
 
           <div className="d-grid mb-10">
             <Button variant="primary" isLoading={isLoading}>
-              Continue
+              Register
             </Button>
           </div>
           <div className="text-gray-500 text-center fw-semibold fs-6">

@@ -1,18 +1,26 @@
-import { useSigninMutation } from '../store/services/auth';
-import { Button, TextField } from '@app/components';
-import { Link } from 'react-router-dom';
+import { useForgotPasswordMutation } from '@app/store/services/auth';
+import { Button, HTextField } from '@app/components';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { Link, useNavigate } from 'react-router-dom';
+import { ForgotPasswordPayload } from '@app/store/services/auth/type';
+import { forgotPasswordValidation } from '@app/validations';
 
 export default function ForgotPassword() {
-  const [signin, { isLoading }] = useSigninMutation();
+  const navigate = useNavigate();
+  const [forgotPassword, { isLoading }] = useForgotPasswordMutation();
+  const { handleSubmit, control } = useForm<ForgotPasswordPayload>({
+    resolver: forgotPasswordValidation,
+  });
+  const onSubmit: SubmitHandler<ForgotPasswordPayload> = (data) => {
+    forgotPassword(data)
+      .unwrap()
+      .then(() => navigate('/'));
+  };
+
   return (
     <div className="d-flex flex-center flex-column align-items-stretch h-lg-100 w-md-400px">
       <div className="d-flex flex-center flex-column flex-column-fluid pb-15 pb-lg-20">
-        <form
-          className="form w-100"
-          id="kt_sign_in_form"
-          data-kt-redirect-url="../../demo44/dist/index.html"
-          action="#"
-        >
+        <form className="form w-100" id="kt_sign_in_form" onSubmit={handleSubmit(onSubmit)}>
           <div className="text-center mb-11">
             <h1 className="text-dark fw-bolder mb-3">Forgot Password ?</h1>
             <div className="text-gray-500 fw-semibold fs-6">
@@ -20,10 +28,10 @@ export default function ForgotPassword() {
             </div>
           </div>
           <div className="fv-row mb-8">
-            <TextField type="text" placeholder="Email" name="email" />
+            <HTextField control={control} type="text" placeholder="Email" name="email_address" />
           </div>
           <div className="d-flex flex-wrap justify-content-center pb-lg-0">
-            <Button variant="primary" isLoading={isLoading} className="me-4">
+            <Button variant="primary" type="submit" isLoading={isLoading} className="me-4">
               Submit
             </Button>
 

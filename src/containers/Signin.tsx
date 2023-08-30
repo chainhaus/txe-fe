@@ -1,27 +1,32 @@
-import { useSigninMutation } from '../store/services/auth';
-import { Button, TextField } from '@app/components';
+import { useSigninMutation } from '@app/store/services/auth';
+import { Button, HTextField } from '@app/components';
+import { useForm, SubmitHandler } from 'react-hook-form';
 import { Link } from 'react-router-dom';
+import { SigninPayload } from '@app/store/services/auth/type';
+import { authValidation } from '@app/validations';
 
 export default function Signin() {
   const [signin, { isLoading }] = useSigninMutation();
+  const { handleSubmit, control } = useForm<SigninPayload>({
+    resolver: authValidation,
+  });
+  const onSubmit: SubmitHandler<SigninPayload> = (data) => {
+    signin(data);
+  };
+
   return (
     <div className="d-flex flex-center flex-column align-items-stretch h-lg-100 w-md-400px">
       <div className="d-flex flex-center flex-column flex-column-fluid pb-15 pb-lg-20">
-        <form
-          className="form w-100"
-          id="kt_sign_in_form"
-          data-kt-redirect-url="../../demo44/dist/index.html"
-          action="#"
-        >
+        <form className="form w-100" id="kt_sign_in_form" onSubmit={handleSubmit(onSubmit)}>
           <div className="text-center mb-11">
             <h1 className="text-dark fw-bolder mb-3">Sign In</h1>
             <div className="text-gray-500 fw-semibold fs-6">Your Social Campaigns</div>
           </div>
           <div className="fv-row mb-8">
-            <TextField type="text" placeholder="Email" name="email" />
+            <HTextField type="text" control={control} placeholder="Email" name="email_address" />
           </div>
           <div className="fv-row mb-3">
-            <TextField type="password" placeholder="Password" name="password" />
+            <HTextField type="password" control={control} placeholder="Password" name="password" />
           </div>
           <div className="d-flex flex-stack flex-wrap gap-3 fs-base fw-semibold mb-8">
             <div></div>
@@ -30,7 +35,7 @@ export default function Signin() {
             </Link>
           </div>
           <div className="d-grid mb-10">
-            <Button variant="primary" isLoading={isLoading}>
+            <Button type="submit" variant="primary" isLoading={isLoading}>
               Continue
             </Button>
           </div>
