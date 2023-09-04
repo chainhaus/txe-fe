@@ -1,30 +1,17 @@
-import { User } from '@app/types/user';
-
-export type SigninPayload = {
-  email_address: string;
-  password: string;
+export type CreateEventPayload = {
+  title: string;
+  date: Date;
+  start_time: Date;
+  end_time: Date;
+  location: string;
+  enabled?: boolean;
+  private?: boolean;
 };
 
-export interface SigninResponse extends User {
-  token: string;
-}
-
-export type SignupPayload = {
-  name: string;
-  email_address: string;
-  password: string;
-  confirm_password: string;
+export type UpdateEventPayload = CreateEventPayload & {
+  id: string;
 };
 
-export type ForgotPasswordPayload = {
-  email_address: string;
+export type StatusEventPayload = {
+  id: string;
 };
-
-export type ResetPasswordPayload = {
-  password: string;
-  confirm_password: string;
-};
-
-export interface ResetPasswordBody extends ResetPasswordPayload {
-  token: string;
-}

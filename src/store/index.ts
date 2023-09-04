@@ -1,18 +1,11 @@
 import { Store, configureStore, combineReducers } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
-import {
-  persistStore,
-  persistReducer,
-  FLUSH,
-  REHYDRATE,
-  PAUSE,
-  PERSIST,
-  PURGE,
-  REGISTER,
-} from 'redux-persist';
+import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import auth from './reducers/auth';
 import inform from './reducers/inform';
+import confirm from './reducers/confirm';
+import globalModal from './reducers/modal';
 import { authApi } from './services/auth';
 import { eventApi } from './services/event';
 import { ticketApi } from './services/ticket';
@@ -29,6 +22,8 @@ const persistConfig = {
 const RootReducer = combineReducers({
   auth,
   inform,
+  confirm,
+  globalModal,
   [authApi.reducerPath]: authApi.reducer,
   [eventApi.reducerPath]: eventApi.reducer,
   [ticketApi.reducerPath]: ticketApi.reducer,
@@ -43,9 +38,7 @@ export const store: Store = configureStore({
   devTools: process.env.NODE_ENV !== 'production',
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-      },
+      serializableCheck: false,
     }).concat(
       authApi.middleware,
       eventApi.middleware,

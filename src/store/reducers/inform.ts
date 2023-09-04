@@ -13,7 +13,7 @@ const initialState: InformState = {
   message: '',
 };
 
-export const counterSlice = createSlice({
+export const informSlice = createSlice({
   name: 'inform',
   initialState,
   reducers: {
@@ -31,6 +31,6 @@ export const counterSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { openInform, closeInform } = counterSlice.actions;
+export const { openInform, closeInform } = informSlice.actions;
 
-export default counterSlice.reducer;
+export default informSlice.reducer;

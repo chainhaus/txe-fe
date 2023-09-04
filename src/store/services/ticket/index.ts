@@ -1,65 +1,29 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import type { User } from '@app/types/user';
+import type { Ticket } from '@app/types/ticket';
 import fetchBaseQuery from '../../base-query';
-import type {
-  SigninPayload,
-  SigninResponse,
-  SignupPayload,
-  ForgotPasswordPayload,
-  ResetPasswordBody,
-} from './type';
+import type { CreateTicketPayload, DisableEventPayload } from './type';
 import type { ErrorResponse } from '../type';
-import { setLogin, logout } from '../../reducers/auth';
 import { openInform } from '../../reducers/inform';
 
 export const ticketApi = createApi({
   reducerPath: 'ticketApi',
   baseQuery: fetchBaseQuery,
+  tagTypes: ['Tickets'],
   endpoints: (builder) => ({
-    signup: builder.mutation<User, SignupPayload>({
-      query(body) {
-        return {
-          url: `auth/signup`,
-          method: 'POST',
-          body,
-        };
-      },
-      async onQueryStarted(_, { dispatch, queryFulfilled }) {
-        try {
-          await queryFulfilled;
-
-          dispatch(openInform({ show: true, type: 'success', message: 'Register successfully.' }));
-        } catch (err) {
-          const { error } = err as ErrorResponse;
-          dispatch(openInform({ show: true, type: 'danger', message: error?.data?.message || '' }));
-        }
-      },
+    fetchTickets: builder.query<Ticket[], { eventId: string }>({
+      query: ({ eventId }) => ({ url: `ticket?eventId=${eventId}` }),
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ id }) => ({ type: 'Tickets', id }) as const),
+              { type: 'Tickets', id: 'LIST' },
+            ]
+          : [{ type: 'Tickets', id: 'LIST' }],
     }),
-    signin: builder.mutation<SigninResponse, SigninPayload>({
+    createTicket: builder.mutation<Event, CreateTicketPayload>({
       query(body) {
         return {
-          url: `auth/signin`,
-          method: 'POST',
-          body,
-        };
-      },
-      async onQueryStarted(_, { dispatch, queryFulfilled }) {
-        try {
-          const { data } = await queryFulfilled;
-
-          dispatch(setLogin(data));
-          dispatch(openInform({ show: true, type: 'success', message: 'Sign in successfully.' }));
-        } catch (err) {
-          const { error } = err as ErrorResponse;
-          dispatch(openInform({ show: true, type: 'danger', message: error?.data?.message || '' }));
-        }
-      },
-    }),
-
-    forgotPassword: builder.mutation<User, ForgotPasswordPayload>({
-      query(body) {
-        return {
-          url: `auth/forgot-password`,
+          url: `ticket`,
           method: 'POST',
           body,
         };
@@ -71,7 +35,7 @@ export const ticketApi = createApi({
             openInform({
               show: true,
               type: 'success',
-              message: 'We sent your an email to reset your password.',
+              message: 'Created Ticket Successfully',
             }),
           );
         } catch (err) {
@@ -79,19 +43,14 @@ export const ticketApi = createApi({
           dispatch(openInform({ show: true, type: 'danger', message: error?.data?.message || '' }));
         }
       },
+      invalidatesTags: [{ type: 'Tickets', id: 'LIST' }],
     }),
-    resetPassword: builder.mutation<User, ResetPasswordBody>({
-      query(body) {
+    disableTicket: builder.mutation<Event, DisableEventPayload>({
+      query({ id, ...body }) {
         return {
-          url: `auth/reset-password`,
-          method: 'POST',
-          body: {
-            password: body.password,
-            confirm_password: body.confirm_password,
-          },
-          headers: {
-            authorization: `Bearer ${body.token}`,
-          },
+          url: `ticket/${id}`,
+          method: 'PATCH',
+          body,
         };
       },
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
@@ -101,7 +60,7 @@ export const ticketApi = createApi({
             openInform({
               show: true,
               type: 'success',
-              message: 'Reset password successfully.',
+              message: 'Disabled Ticket successfully.',
             }),
           );
         } catch (err) {
@@ -109,13 +68,10 @@ export const ticketApi = createApi({
           dispatch(openInform({ show: true, type: 'danger', message: error?.data?.message || '' }));
         }
       },
+      invalidatesTags: (result, error, { id }) => [{ type: 'Tickets', id }],
     }),
   }),
 });
 
-export const {
-  useSigninMutation,
-  useForgotPasswordMutation,
-  useResetPasswordMutation,
-  useSignupMutation,
-} = ticketApi;
+export const { useCreateTicketMutation, useDisableTicketMutation, useFetchTicketsQuery } =
+  ticketApi;

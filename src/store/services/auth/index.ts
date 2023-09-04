@@ -9,7 +9,7 @@ import type {
   ResetPasswordBody,
 } from './type';
 import type { ErrorResponse } from '../type';
-import { setLogin, logout } from '../../reducers/auth';
+import { setLogin } from '../../reducers/auth';
 import { openInform } from '../../reducers/inform';
 
 export const authApi = createApi({

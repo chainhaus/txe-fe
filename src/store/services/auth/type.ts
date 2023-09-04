@@ -7,6 +7,7 @@ export type SigninPayload = {
 
 export interface SigninResponse extends User {
   token: string;
+  timezone?: string;
 }
 
 export type SignupPayload = {

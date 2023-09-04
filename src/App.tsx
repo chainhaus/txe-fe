@@ -2,6 +2,8 @@ import ReduxProvider from './store/provider';
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 
 import { Inform } from './containers/Inform';
+import { GlobalModal } from './containers/GlobalModal';
+import { Confirm } from './containers/Confirm';
 import { PublicLayout, PrivateLayout } from './containers/Layout';
 import ErrorPage from './containers/error-page';
 import Signin from './containers/Signin';
@@ -69,7 +71,7 @@ const router = createBrowserRouter([
         element: <PotentialPartner />,
       },
       {
-        path: 'ticket/:eventId',
+        path: 'ticket/event/:eventId',
         element: <Ticket />,
       },
     ],
@@ -80,6 +82,8 @@ function App() {
   return (
     <ReduxProvider>
       <Inform />
+      <Confirm />
+      <GlobalModal />
       <RouterProvider router={router} />
     </ReduxProvider>
   );
