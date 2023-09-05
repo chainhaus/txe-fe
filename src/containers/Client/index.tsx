@@ -1,24 +1,53 @@
-import { Button, Table, TableSkeleton } from '@app/components';
-import type { Ticket } from '@app/types/ticket';
+import { Button, Table, TableSkeleton, Select, Option } from '@app/components';
+import type { User } from '@app/types/user';
 import { createColumnHelper } from '@tanstack/react-table';
-import { useFetchClientsQuery, useChangeStatusClientMutation } from '@app/store/services/client';
+import {
+  useFetchClientsQuery,
+  useChangeStatusClientMutation,
+  useGenerateKeyMutation,
+  useLazyFetchClientsQuery,
+} from '@app/store/services/client';
 import { useConfirm } from '@app/store/hooks';
-import { TicketForm } from './Components/Form';
+import { useEffect, useState } from 'react';
 
-const columnHelper = createColumnHelper<Ticket>();
+const columnHelper = createColumnHelper<User>();
 
 export default function ClientScreen() {
-  const { data, isLoading, isSuccess } = useFetchClientsQuery({});
+  const [trigger, { data, isLoading, isSuccess }] = useLazyFetchClientsQuery();
   const { openConfirm } = useConfirm();
   const [onChange] = useChangeStatusClientMutation();
+  const [onGenerate] = useGenerateKeyMutation();
+  const [isPartner, setIsPartner] = useState<Option>({
+    value: null,
+    label: 'All',
+  });
+
+  useEffect(() => {
+    if (typeof isPartner.value === 'string' || isPartner.value === null) {
+      trigger({ open_to_partnership: isPartner.value === null ? undefined : isPartner.value });
+    }
+  }, [isPartner]);
 
   const columns = [
     columnHelper.accessor('name', {
       header: () => 'Name',
       cell: (info) => info.getValue(),
     }),
-    columnHelper.accessor('price', {
-      header: () => 'Price',
+    columnHelper.accessor('email_address', {
+      header: () => 'Email',
+      cell: (info) => (
+        <div>
+          {info.getValue()}
+          {info.row.original.email_verified && <i className="ki-outline ki-verify text-success" />}
+        </div>
+      ),
+    }),
+    columnHelper.accessor('role', {
+      header: () => 'Role',
+      cell: (info) => info.getValue(),
+    }),
+    columnHelper.accessor('api_key', {
+      header: () => 'Key',
       cell: (info) => info.getValue(),
     }),
     columnHelper.accessor('enabled', {
@@ -36,13 +65,39 @@ export default function ClientScreen() {
               onClick={() =>
                 openConfirm({
                   show: true,
-                  onConfirm: () => disable({ id: String(info.getValue()), enabled: false }),
+                  onConfirm: () => onChange({ id: String(info.getValue()), enabled: false }),
+                })
+              }
+            >
+              <i className="ki-outline ki-eye fs-3"></i>
+            </Button>
+          )}
+          {!info.row.original.enabled && (
+            <Button
+              variant="primary"
+              className="me-2"
+              onClick={() =>
+                openConfirm({
+                  show: true,
+                  onConfirm: () => onChange({ id: String(info.getValue()), enabled: true }),
                 })
               }
             >
               <i className="ki-outline ki-eye-slash fs-3"></i>
             </Button>
           )}
+          <Button
+            variant="primary"
+            className="me-2"
+            onClick={() =>
+              openConfirm({
+                show: true,
+                onConfirm: () => onGenerate({ id: String(info.getValue()) }),
+              })
+            }
+          >
+            <i className="ki-outline ki-key-square fs-3"></i>
+          </Button>
         </div>
       ),
     }),
@@ -58,12 +113,25 @@ export default function ClientScreen() {
               data-kt-customer-table-toolbar="base"
             >
               <h2>Client</h2>
+              <Select
+                options={[
+                  { value: null, label: 'All' },
+                  { value: 'true', label: 'Possible Partner' },
+                  { value: 'false', label: 'None Partner' },
+                ]}
+                value={isPartner}
+                onChange={(option: Option | null) => {
+                  if (!!option) {
+                    setIsPartner(option);
+                  }
+                }}
+              />
             </div>
           </div>
         </div>
         <div className="card-body pt-0">
           {isLoading && <TableSkeleton />}
-          {isSuccess && <Table columns={columns} data={data} />}
+          {isSuccess && <Table columns={columns} data={data || []} />}
         </div>
       </div>
     </div>

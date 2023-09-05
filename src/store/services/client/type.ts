@@ -1,5 +1,5 @@
 export type GetClientParams = {
-  open_to_partnership?: 'true' | 'false';
+  open_to_partnership?: string;
 };
 
 export type GenerateKeyPayload = {

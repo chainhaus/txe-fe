@@ -1,5 +1,5 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import type { Ticket } from '@app/types/ticket';
+import type { User } from '@app/types/user';
 import fetchBaseQuery from '../../base-query';
 import type { GetClientParams, EventChangeStatusPayload, GenerateKeyPayload } from './type';
 import type { ErrorResponse } from '../type';
@@ -9,8 +9,9 @@ export const clientApi = createApi({
   reducerPath: 'clientApi',
   baseQuery: fetchBaseQuery,
   tagTypes: ['Clients'],
+  keepUnusedDataFor: 30,
   endpoints: (builder) => ({
-    fetchClients: builder.query<Ticket[], GetClientParams>({
+    fetchClients: builder.query<User[], GetClientParams>({
       query: (params) => ({ url: `client`, params }),
       providesTags: (result) =>
         result
@@ -73,5 +74,9 @@ export const clientApi = createApi({
   }),
 });
 
-export const { useChangeStatusClientMutation, useFetchClientsQuery, useGenerateKeyMutation } =
-  clientApi;
+export const {
+  useChangeStatusClientMutation,
+  useFetchClientsQuery,
+  useGenerateKeyMutation,
+  useLazyFetchClientsQuery,
+} = clientApi;

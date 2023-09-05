@@ -11,6 +11,7 @@ import { eventApi } from './services/event';
 import { ticketApi } from './services/ticket';
 import { orderApi } from './services/order';
 import { partnerShipApi } from './services/partnership';
+import { clientApi } from './services/client';
 
 const persistConfig = {
   key: 'root',
@@ -29,6 +30,7 @@ const RootReducer = combineReducers({
   [ticketApi.reducerPath]: ticketApi.reducer,
   [orderApi.reducerPath]: orderApi.reducer,
   [partnerShipApi.reducerPath]: partnerShipApi.reducer,
+  [clientApi.reducerPath]: clientApi.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, RootReducer);
@@ -45,6 +47,7 @@ export const store: Store = configureStore({
       ticketApi.middleware,
       orderApi.middleware,
       partnerShipApi.middleware,
+      clientApi.middleware,
     ),
 });
 
