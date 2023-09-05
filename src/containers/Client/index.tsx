@@ -1,19 +1,16 @@
 import { Button, Table, TableSkeleton } from '@app/components';
 import type { Ticket } from '@app/types/ticket';
-import { useParams } from 'react-router-dom';
 import { createColumnHelper } from '@tanstack/react-table';
-import { useDisableTicketMutation, useFetchTicketsQuery } from '@app/store/services/ticket';
-import { useConfirm, useGlobalModal } from '@app/store/hooks';
+import { useFetchClientsQuery, useChangeStatusClientMutation } from '@app/store/services/client';
+import { useConfirm } from '@app/store/hooks';
 import { TicketForm } from './Components/Form';
 
 const columnHelper = createColumnHelper<Ticket>();
 
-export default function TicketScreen() {
-  const params = useParams<{ eventId: string }>();
-  const { data, isLoading, isSuccess } = useFetchTicketsQuery({ eventId: params.eventId || '' });
-  const { openGlobalModal } = useGlobalModal();
+export default function ClientScreen() {
+  const { data, isLoading, isSuccess } = useFetchClientsQuery({});
   const { openConfirm } = useConfirm();
-  const [disable] = useDisableTicketMutation();
+  const [onChange] = useChangeStatusClientMutation();
 
   const columns = [
     columnHelper.accessor('name', {
@@ -60,20 +57,7 @@ export default function TicketScreen() {
               className="d-flex justify-content-between w-100"
               data-kt-customer-table-toolbar="base"
             >
-              <h2>Ticket</h2>
-              <Button
-                type="button"
-                variant="primary"
-                onClick={() =>
-                  openGlobalModal({
-                    show: true,
-                    title: 'Create Event',
-                    content: <TicketForm eventId={params.eventId || ''} />,
-                  })
-                }
-              >
-                Add Ticket
-              </Button>
+              <h2>Client</h2>
             </div>
           </div>
         </div>

@@ -13,7 +13,7 @@ import { EventForm } from './Components/Form';
 
 const columnHelper = createColumnHelper<Event>();
 
-export default function Dashboard() {
+export default function EventScreen() {
   const { data, isLoading, isSuccess } = useFetchEventsQuery({});
   const { openGlobalModal } = useGlobalModal();
   const { openConfirm } = useConfirm();

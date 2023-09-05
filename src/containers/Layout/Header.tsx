@@ -1,6 +1,8 @@
+import { useAuth } from '@app/store/hooks';
 import { Link } from 'react-router-dom';
 
 export const Header = () => {
+  const { profile } = useAuth();
   return (
     <div id="kt_app_header" className="app-header">
       <div
@@ -23,24 +25,35 @@ export const Header = () => {
           <div className="d-flex align-items-stretch">
             <div className="app-header-menu app-header-mobile-drawer align-items-stretch">
               <div className="menu menu-rounded menu-column menu-lg-row menu-active-bg menu-title-gray-600 menu-state-dark menu-arrow-gray-400 fw-semibold fw-semibold fs-6 align-items-stretch my-5 my-lg-0 px-2 px-lg-0">
-                <div className="menu-item here menu-here-bg menu-lg-down-accordion me-0 me-lg-2">
-                  <span className="menu-link">
-                    <span className="menu-title">Clients</span>
-                    <span className="menu-arrow d-lg-none"></span>
-                  </span>
-                </div>
-                <div className="menu-item menu-here-bg menu-lg-down-accordion me-0 me-lg-2">
+                {profile.role === 'admin' && (
+                  <Link
+                    to="/dashboard/client"
+                    className="menu-item menu-here-bg menu-lg-down-accordion me-0 me-lg-2"
+                  >
+                    <span className="menu-link">
+                      <span className="menu-title">Clients</span>
+                      <span className="menu-arrow d-lg-none"></span>
+                    </span>
+                  </Link>
+                )}
+                <Link
+                  to="/dashboard/event"
+                  className="menu-item menu-here-bg menu-lg-down-accordion me-0 me-lg-2"
+                >
                   <span className="menu-link">
                     <span className="menu-title">Events</span>
                     <span className="menu-arrow d-lg-none"></span>
                   </span>
-                </div>
-                <div className="menu-item menu-here-bg menu-lg-down-accordion me-0 me-lg-2">
+                </Link>
+                <Link
+                  to="/dashboard/order"
+                  className="menu-item menu-here-bg menu-lg-down-accordion me-0 me-lg-2"
+                >
                   <span className="menu-link">
                     <span className="menu-title">Orders</span>
                     <span className="menu-arrow d-lg-none"></span>
                   </span>
-                </div>
+                </Link>
               </div>
             </div>
           </div>

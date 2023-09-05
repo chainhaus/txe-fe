@@ -16,6 +16,8 @@ import Order from './containers/Order';
 import CurrentPartner from './containers/CurrentPartner';
 import PotentialPartner from './containers/PotentialPartner';
 import Ticket from './containers/Ticket';
+import Event from './containers/Event';
+import Client from './containers/Client';
 
 const router = createBrowserRouter([
   {
@@ -69,6 +71,14 @@ const router = createBrowserRouter([
       {
         path: 'potential-partner',
         element: <PotentialPartner />,
+      },
+      {
+        path: 'event',
+        element: <Event />,
+      },
+      {
+        path: 'client',
+        element: <Client />,
       },
       {
         path: 'ticket/event/:eventId',
