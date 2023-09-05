@@ -1,30 +1,24 @@
+import { Event } from '@app/types/event';
+import { Ticket } from '@app/types/ticket';
 import { User } from '@app/types/user';
 
-export type SigninPayload = {
-  email_address: string;
-  password: string;
+export type CreateOrderBody = {
+  event: Event;
+  ticket: Ticket;
+  customer: User;
 };
 
-export interface SigninResponse extends User {
-  token: string;
-}
-
-export type SignupPayload = {
-  name: string;
-  email_address: string;
-  password: string;
-  confirm_password: string;
+export type CreateOrderPayload = {
+  event_id: number;
+  ticket_id: number;
+  customer_id: number;
 };
 
-export type ForgotPasswordPayload = {
-  email_address: string;
+export type CancelOrderPayload = {
+  id: number;
+  valid: boolean;
 };
 
-export type ResetPasswordPayload = {
-  password: string;
-  confirm_password: string;
+export type FetchOrderParams = {
+  eventId?: number;
 };
-
-export interface ResetPasswordBody extends ResetPasswordPayload {
-  token: string;
-}

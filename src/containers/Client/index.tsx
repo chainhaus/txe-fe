@@ -58,20 +58,6 @@ export default function ClientScreen() {
       header: () => 'Action',
       cell: (info) => (
         <div>
-          {info.row.original.enabled && (
-            <Button
-              variant="primary"
-              className="me-2"
-              onClick={() =>
-                openConfirm({
-                  show: true,
-                  onConfirm: () => onChange({ id: String(info.getValue()), enabled: false }),
-                })
-              }
-            >
-              <i className="ki-outline ki-eye fs-3"></i>
-            </Button>
-          )}
           {!info.row.original.enabled && (
             <Button
               variant="primary"
@@ -83,7 +69,21 @@ export default function ClientScreen() {
                 })
               }
             >
-              <i className="ki-outline ki-eye-slash fs-3"></i>
+              <i className="ki-outline ki-eye fs-3"></i> Enable
+            </Button>
+          )}
+          {info.row.original.enabled && (
+            <Button
+              variant="primary"
+              className="me-2"
+              onClick={() =>
+                openConfirm({
+                  show: true,
+                  onConfirm: () => onChange({ id: String(info.getValue()), enabled: false }),
+                })
+              }
+            >
+              <i className="ki-outline ki-eye-slash fs-3"></i> Disable
             </Button>
           )}
           <Button
@@ -96,7 +96,7 @@ export default function ClientScreen() {
               })
             }
           >
-            <i className="ki-outline ki-key-square fs-3"></i>
+            <i className="ki-outline ki-key-square fs-3"></i> Generate Key
           </Button>
         </div>
       ),
@@ -114,6 +114,7 @@ export default function ClientScreen() {
             >
               <h2>Client</h2>
               <Select
+                layout="horizontal"
                 options={[
                   { value: null, label: 'All' },
                   { value: 'true', label: 'Possible Partner' },

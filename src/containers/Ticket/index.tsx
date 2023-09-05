@@ -43,7 +43,7 @@ export default function TicketScreen() {
                 })
               }
             >
-              <i className="ki-outline ki-eye-slash fs-3"></i>
+              <i className="ki-outline ki-eye-slash fs-3"></i> Disable
             </Button>
           )}
         </div>

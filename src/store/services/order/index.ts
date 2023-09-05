@@ -1,65 +1,30 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import type { User } from '@app/types/user';
+import type { Order } from '@app/types/order';
 import fetchBaseQuery from '../../base-query';
-import type {
-  SigninPayload,
-  SigninResponse,
-  SignupPayload,
-  ForgotPasswordPayload,
-  ResetPasswordBody,
-} from './type';
+import type { CreateOrderPayload, CancelOrderPayload, FetchOrderParams } from './type';
 import type { ErrorResponse } from '../type';
-import { setLogin, logout } from '../../reducers/auth';
 import { openInform } from '../../reducers/inform';
 
 export const orderApi = createApi({
   reducerPath: 'orderApi',
   baseQuery: fetchBaseQuery,
+  tagTypes: ['Orders'],
+  keepUnusedDataFor: 30,
   endpoints: (builder) => ({
-    signup: builder.mutation<User, SignupPayload>({
-      query(body) {
-        return {
-          url: `auth/signup`,
-          method: 'POST',
-          body,
-        };
-      },
-      async onQueryStarted(_, { dispatch, queryFulfilled }) {
-        try {
-          await queryFulfilled;
-
-          dispatch(openInform({ show: true, type: 'success', message: 'Register successfully.' }));
-        } catch (err) {
-          const { error } = err as ErrorResponse;
-          dispatch(openInform({ show: true, type: 'danger', message: error?.data?.message || '' }));
-        }
-      },
+    fetchOrders: builder.query<Order[], FetchOrderParams>({
+      query: (params) => ({ url: `order`, params }),
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ id }) => ({ type: 'Orders', id }) as const),
+              { type: 'Orders', id: 'LIST' },
+            ]
+          : [{ type: 'Orders', id: 'LIST' }],
     }),
-    signin: builder.mutation<SigninResponse, SigninPayload>({
+    createOrder: builder.mutation<Order, CreateOrderPayload>({
       query(body) {
         return {
-          url: `auth/signin`,
-          method: 'POST',
-          body,
-        };
-      },
-      async onQueryStarted(_, { dispatch, queryFulfilled }) {
-        try {
-          const { data } = await queryFulfilled;
-
-          dispatch(setLogin(data));
-          dispatch(openInform({ show: true, type: 'success', message: 'Sign in successfully.' }));
-        } catch (err) {
-          const { error } = err as ErrorResponse;
-          dispatch(openInform({ show: true, type: 'danger', message: error?.data?.message || '' }));
-        }
-      },
-    }),
-
-    forgotPassword: builder.mutation<User, ForgotPasswordPayload>({
-      query(body) {
-        return {
-          url: `auth/forgot-password`,
+          url: `order`,
           method: 'POST',
           body,
         };
@@ -71,7 +36,7 @@ export const orderApi = createApi({
             openInform({
               show: true,
               type: 'success',
-              message: 'We sent your an email to reset your password.',
+              message: 'Created Order Successfully',
             }),
           );
         } catch (err) {
@@ -79,19 +44,14 @@ export const orderApi = createApi({
           dispatch(openInform({ show: true, type: 'danger', message: error?.data?.message || '' }));
         }
       },
+      invalidatesTags: [{ type: 'Orders', id: 'LIST' }],
     }),
-    resetPassword: builder.mutation<User, ResetPasswordBody>({
-      query(body) {
+    updateOrder: builder.mutation<Order, CancelOrderPayload>({
+      query({ id, ...body }) {
         return {
-          url: `auth/reset-password`,
-          method: 'POST',
-          body: {
-            password: body.password,
-            confirm_password: body.confirm_password,
-          },
-          headers: {
-            authorization: `Bearer ${body.token}`,
-          },
+          url: `order/${id}`,
+          method: 'PATCH',
+          body,
         };
       },
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
@@ -101,7 +61,7 @@ export const orderApi = createApi({
             openInform({
               show: true,
               type: 'success',
-              message: 'Reset password successfully.',
+              message: 'Change order status successfully.',
             }),
           );
         } catch (err) {
@@ -109,13 +69,14 @@ export const orderApi = createApi({
           dispatch(openInform({ show: true, type: 'danger', message: error?.data?.message || '' }));
         }
       },
+      invalidatesTags: (result, error, { id }) => [{ type: 'Orders', id }],
     }),
   }),
 });
 
 export const {
-  useSigninMutation,
-  useForgotPasswordMutation,
-  useResetPasswordMutation,
-  useSignupMutation,
+  useCreateOrderMutation,
+  useUpdateOrderMutation,
+  useFetchOrdersQuery,
+  useLazyFetchOrdersQuery,
 } = orderApi;

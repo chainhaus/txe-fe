@@ -1,25 +1,33 @@
-import { Button, Table, TableSkeleton } from '@app/components';
+import { Button, Table, TableSkeleton, Select, Option } from '@app/components';
 import type { Event } from '@app/types/event';
 import { createColumnHelper } from '@tanstack/react-table';
 import {
-  useFetchEventsQuery,
   useDisableEventMutation,
   useEnableEventMutation,
+  useLazyFetchEventsQuery,
 } from '@app/store/services/event';
 import { useConfirm, useGlobalModal } from '@app/store/hooks';
 import { format, parseISO } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 import { EventForm } from './Components/Form';
+import { useState, useEffect } from 'react';
 
 const columnHelper = createColumnHelper<Event>();
 
 export default function EventScreen() {
-  const { data, isLoading, isSuccess } = useFetchEventsQuery({});
+  const [type, setType] = useState<Option>({ value: null, label: 'All' });
+  const [trigger, { data, isLoading, isSuccess }] = useLazyFetchEventsQuery();
   const { openGlobalModal } = useGlobalModal();
   const { openConfirm } = useConfirm();
   const [enable] = useEnableEventMutation();
   const [disable] = useDisableEventMutation();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (typeof type.value === 'boolean' || type.value === null) {
+      trigger({ private: type.value === null ? undefined : type.value });
+    }
+  }, [type]);
 
   const columns = [
     columnHelper.accessor('title', {
@@ -57,7 +65,7 @@ export default function EventScreen() {
                 })
               }
             >
-              <i className="ki-outline ki-eye fs-3"></i>
+              <i className="ki-outline ki-eye fs-3"></i> Enable
             </Button>
           )}
           {!!info.row.original.enabled && (
@@ -71,7 +79,7 @@ export default function EventScreen() {
                 })
               }
             >
-              <i className="ki-outline ki-eye-slash fs-3"></i>
+              <i className="ki-outline ki-eye-slash fs-3"></i> Disable
             </Button>
           )}
           <Button
@@ -85,13 +93,13 @@ export default function EventScreen() {
               })
             }
           >
-            <i className="ki-outline ki-pencil fs-3"></i>
+            <i className="ki-outline ki-pencil fs-3"></i> Edit
           </Button>
           <Button
             variant="success"
             onClick={() => navigate(`/dashboard/ticket/event/${info.getValue()}`)}
           >
-            <i className="ki-outline ki-cheque fs-3"></i>
+            <i className="ki-outline ki-cheque fs-3"></i> View ticket
           </Button>
         </div>
       ),
@@ -108,25 +116,42 @@ export default function EventScreen() {
               data-kt-customer-table-toolbar="base"
             >
               <h2>Event</h2>
-              <Button
-                type="button"
-                variant="primary"
-                onClick={() =>
-                  openGlobalModal({
-                    show: true,
-                    title: 'Create Event',
-                    content: <EventForm />,
-                  })
-                }
-              >
-                Add Event
-              </Button>
+              <div className="d-flex">
+                <Select
+                  layout="horizontal"
+                  options={[
+                    { value: null, label: 'All' },
+                    { value: true, label: 'Private' },
+                    { value: false, label: 'Public' },
+                  ]}
+                  value={type}
+                  onChange={(option: Option | null) => {
+                    if (!!option) {
+                      setType(option);
+                    }
+                  }}
+                />
+                <Button
+                  type="button"
+                  variant="primary"
+                  className="ms-6"
+                  onClick={() =>
+                    openGlobalModal({
+                      show: true,
+                      title: 'Create Event',
+                      content: <EventForm />,
+                    })
+                  }
+                >
+                  Add Event
+                </Button>
+              </div>
             </div>
           </div>
         </div>
         <div className="card-body pt-0">
           {isLoading && <TableSkeleton />}
-          {isSuccess && <Table columns={columns} data={data} />}
+          {isSuccess && <Table columns={columns} data={data || []} />}
         </div>
       </div>
     </div>

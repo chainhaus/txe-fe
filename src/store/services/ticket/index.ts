@@ -9,9 +9,10 @@ export const ticketApi = createApi({
   reducerPath: 'ticketApi',
   baseQuery: fetchBaseQuery,
   tagTypes: ['Tickets'],
+  keepUnusedDataFor: 30,
   endpoints: (builder) => ({
-    fetchTickets: builder.query<Ticket[], { eventId: string }>({
-      query: ({ eventId }) => ({ url: `ticket?eventId=${eventId}` }),
+    fetchTickets: builder.query<Ticket[], { eventId?: string }>({
+      query: ({ eventId }) => ({ url: `ticket`, params: { eventId } }),
       providesTags: (result) =>
         result
           ? [

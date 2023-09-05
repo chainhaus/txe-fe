@@ -4,15 +4,15 @@ import type { StatusEventPayload, CreateEventPayload, UpdateEventPayload } from 
 import type { ErrorResponse } from '../type';
 import fetchBaseQuery from '../../base-query';
 import { openInform } from '../../reducers/inform';
-import { format } from 'date-fns';
 
 export const eventApi = createApi({
   reducerPath: 'eventApi',
   baseQuery: fetchBaseQuery,
   tagTypes: ['Events'],
+  keepUnusedDataFor: 30,
   endpoints: (builder) => ({
-    fetchEvents: builder.query<Event[], {}>({
-      query: () => ({ url: 'event' }),
+    fetchEvents: builder.query<Event[], { private?: boolean }>({
+      query: (params) => ({ url: 'event', params }),
       providesTags: (result) =>
         result
           ? [
@@ -135,4 +135,5 @@ export const {
   useEnableEventMutation,
   useGetEventQuery,
   useUpdateEventMutation,
+  useLazyFetchEventsQuery,
 } = eventApi;
