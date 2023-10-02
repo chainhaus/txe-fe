@@ -11,6 +11,7 @@ export default function Signup() {
   const { handleSubmit, control } = useForm<SignupPayload>({
     resolver: registerValidation,
   });
+
   const onSubmit: SubmitHandler<SignupPayload> = (data) => {
     signup(data)
       .unwrap()
@@ -28,7 +29,7 @@ export default function Signup() {
             <HTextField control={control} type="text" placeholder="Name" name="name" />
           </div>
           <div className="fv-row mb-8">
-            <HTextField control={control} type="text" placeholder="Email" name="email" />
+            <HTextField control={control} type="text" placeholder="Email" name="email_address" />
           </div>
           <div className="fv-row mb-8">
             <HTextField control={control} type="password" placeholder="Password" name="password" />
@@ -43,7 +44,7 @@ export default function Signup() {
           </div>
 
           <div className="d-grid mb-10">
-            <Button variant="primary" isLoading={isLoading}>
+            <Button type="submit" variant="primary" isLoading={isLoading}>
               Register
             </Button>
           </div>
