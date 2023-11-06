@@ -1,0 +1,13 @@
+.user-avatar {
+  position: relative;
+}
+
+.user-avatar .menu-sub {
+  position: absolute;
+  right: 0;
+  top: 75px;
+}
+
+.user-avatar:hover .menu-sub {
+  display: block;
+}

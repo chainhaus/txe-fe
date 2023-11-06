@@ -81,7 +81,7 @@ const router = createBrowserRouter([
         element: <Client />,
       },
       {
-        path: 'ticket/event/:eventId',
+        path: 'event/ticket/:eventId',
         element: <Ticket />,
       },
     ],

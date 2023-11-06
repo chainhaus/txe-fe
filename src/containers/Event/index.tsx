@@ -97,7 +97,7 @@ export default function EventScreen() {
           </Button>
           <Button
             variant="success"
-            onClick={() => navigate(`/dashboard/ticket/event/${info.getValue()}`)}
+            onClick={() => navigate(`/dashboard/event/ticket/${info.getValue()}`)}
           >
             <i className="ki-outline ki-cheque fs-3"></i> View ticket
           </Button>
