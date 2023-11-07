@@ -1,10 +1,10 @@
 import { Button, Table, TableSkeleton } from '@app/components';
-import type { PartnerShip } from '@app/types/partnerShip';
+import type { Affiliate } from '@app/types/affiliate';
 import { createColumnHelper } from '@tanstack/react-table';
-import { useFetchPartnersQuery, useUpdatePartnerMutation } from '@app/store/services/partnership';
+import { useFetchPartnersQuery, useUpdatePartnerMutation } from '@app/store/services/affiliate';
 import { useConfirm } from '@app/store/hooks';
 
-const columnHelper = createColumnHelper<PartnerShip>();
+const columnHelper = createColumnHelper<Affiliate>();
 
 export default function CurrentPartner() {
   const { data, isLoading, isSuccess } = useFetchPartnersQuery({});

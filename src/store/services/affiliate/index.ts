@@ -1,17 +1,17 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
-import type { PartnerShip } from '@app/types/partnerShip';
+import type { Affiliate } from '@app/types/affiliate';
 import fetchBaseQuery from '../../base-query';
-import type { CreatePartnerPayload, UpdatePartnerPayload } from './type';
+import type { CreateAffiliatePayload, UpdateAffiliatePayload } from './type';
 import type { ErrorResponse } from '../type';
 import { openInform } from '../../reducers/inform';
 
-export const partnerShipApi = createApi({
-  reducerPath: 'partnerShipApi',
+export const affiliateApi = createApi({
+  reducerPath: 'affiliateApi',
   baseQuery: fetchBaseQuery,
   tagTypes: ['Partners'],
   keepUnusedDataFor: 30,
   endpoints: (builder) => ({
-    fetchPartners: builder.query<PartnerShip[], {}>({
+    fetchPartners: builder.query<Affiliate[], {}>({
       query: (params) => ({ url: `partnership`, params }),
       providesTags: (result) =>
         result
@@ -21,10 +21,10 @@ export const partnerShipApi = createApi({
             ]
           : [{ type: 'Partners', id: 'LIST' }],
     }),
-    createPartner: builder.mutation<PartnerShip, CreatePartnerPayload>({
+    createPartner: builder.mutation<Affiliate, CreateAffiliatePayload>({
       query(body) {
         return {
-          url: `partnership`,
+          url: `affiliate`,
           method: 'POST',
           body,
         };
@@ -46,10 +46,10 @@ export const partnerShipApi = createApi({
       },
       invalidatesTags: [{ type: 'Partners', id: 'LIST' }],
     }),
-    updatePartner: builder.mutation<PartnerShip, UpdatePartnerPayload>({
+    updatePartner: builder.mutation<Affiliate, UpdateAffiliatePayload>({
       query({ id, ...body }) {
         return {
-          url: `partnership/${id}`,
+          url: `affiliate/${id}`,
           method: 'PATCH',
           body,
         };
@@ -79,4 +79,4 @@ export const {
   useFetchPartnersQuery,
   useLazyFetchPartnersQuery,
   useUpdatePartnerMutation,
-} = partnerShipApi;
+} = affiliateApi;

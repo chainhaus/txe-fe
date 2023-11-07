@@ -1,6 +1,6 @@
 import { User } from './user';
 
-export type PartnerShip = {
+export type Affiliate = {
   id: number;
   requested_by_client_id: number;
   requested_of_client_id: number;
